@@ -33,6 +33,20 @@ function demographics(id) {
 
 function displayPlot(id) {
   d3.json("static/js/samples.json").then((data) => {
+    var demographic = data.metadata.filter(meta=>meta.id.toString() === id)[0];
+    
+    //filter samples by name id
+    var sample_id = data.samples.filter(s => s.id.toString() === id)[0];
+
+  
+    // Get top 10 OTU ids and values
+    top10otu_values = sample_id.sample_values.slice(0,10).reverse();
+    top10otu_ids = sample_id.otu_ids.slice(0,10).reverse();
+    console.log(top10otu_ids);
+
+    var trace1 = {
+      x: top10otu_ids
+    }
 
   });
 
