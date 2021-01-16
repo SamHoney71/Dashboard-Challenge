@@ -42,16 +42,36 @@ function displayPlot(id) {
     // Get top 10 OTU ids and values
     top10otu_values = sample_id.sample_values.slice(0,10).reverse();
     top10otu_ids = sample_id.otu_ids.slice(0,10).reverse();
-    console.log(top10otu_ids);
+    console.log(top10otu_ids + " " + top10otu_values);
 
     var trace1 = {
-      x: top10otu_ids
+      x: top10otu_values,
+      y: top10otu_ids,
+      type:'bar'
+//      orientation:'h'
     }
 
+    var data = trace1;
+
+    var layout = {
+      title: "Top 10 OTU IDs for " + sample_id.id,
+      height: 500,
+      width: 500,
+      bargap: 0.1,
+      xaxis: {title: 'Top 10 Sample Values'},
+    };
+
+  Plotly.react("bar",data,layout,config);
+    
   });
 
-
+  // function optionChanged(id) {
+  //   getPlotforRequestedID(id);
+  //   getMetaData(id);
+  // }
 }
+
+
 
 // Call updatePlotly() when a change occurs
 // d3.selectAll("#selDataset").on("change", updatePlotly);
