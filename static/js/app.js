@@ -1,6 +1,5 @@
 
-
-// Need to create intitial with default plot
+// Create intitial default plot
 function int() {
   d3.json("static/js/samples.json").then((data) => {
     // console.log(data);
@@ -17,6 +16,7 @@ function int() {
   });
 };
 
+// function to create & populate demographic data
 function demographics(id) {
   d3.json("static/js/samples.json").then((data) => {
     var metadata = data.metadata.filter(meta=>meta.id.toString() === id)[0];
@@ -31,7 +31,7 @@ function demographics(id) {
   });
 };
 
-
+// function to generate graphs and display data
 function displayPlot(id) {
   d3.json("static/js/samples.json").then((data) => {
     var metadata = data.metadata.filter(meta=>meta.id.toString() === id)[0];
@@ -50,15 +50,12 @@ function displayPlot(id) {
     otu_ids_name = top10otu_ids.map(d=> "OTU " + d);
     console.log(otu_ids_name)
 
-    //bar chart axis
-    xValue = otu_ids_name;
-    yValue = top10otu_values;
-
+    // Build bar chart
     var trace1 = {
-      x: yValue,
-      y: xValue,
+      x: top10otu_values,
+      y: otu_ids_name,
       type:"bar",
-      text: yValue.map(String),
+      text: otu_ids_name.map(String),
       textpostion: 'auto',
       hoverinfo: 'none',
       orientation: "h",
@@ -76,18 +73,12 @@ function displayPlot(id) {
     var layout = {
       title: "Top 10 OTU IDs for " + sample_id.id,
       height: 500,
-      width: 500,
+      width: 1000,
       bargap: 0.1,
       xaxis: {title: 'Top 10 Sample Values'},
     };
 
-    // var config = {
-    //   scrollZoom : true,
-    //   displaylogo: false,
-    //   resposive: true,
-    // };
-
-
+// Build Bubble Chart
     var trace2 = {
       x: top10otu_ids,
       y: top10otu_values,
@@ -105,64 +96,22 @@ function displayPlot(id) {
       title: 'Bubble Chart for' +' ' + sample_id.id,
       height:500,
       xaxis:{title: 'Top 10 OTU IDs'},
-      yaxis: {title: 'Top 1- Sample Values'},
+      yaxis: {title: 'Top 10 Sample Values'},
     } 
 
+  // Plot charts 
   Plotly.newPlot("bar", data, layout);
-  Plotly.newPlot("bubble", data1, layout1);
-    
+  Plotly.newPlot("bubble", data1, layout1);  
   });
 
-  function optionChanged(id) {
-    displayPlot(id);
-    demographics(id);
-  }
+}
+
+//Function to refresh graphs with selected data
+function optionChanged(id) {
+  displayPlot(id);
+  demographics(id);
 }
 
 int();
 
 
-
-
-// Call updatePlotly() when a change occurs
-// d3.selectAll("#selDataset").on("change", updatePlotly);
-
-
-
-
-// Build Demograpghic Table
-// d3.json("static/js/samples.json").then(function(data) {
-//   // console.log(data);
-//   var patient_name = data.names;
-//   // console.log(patient_name);
-//   var Samples = data.samples;
-//   // console.log(Samples);
-//   var demographics = data.metadata;
-//   //console.log(demographics);
-
-
-
-// // Gets data from JSON file for Plots
-// d3.json("static/js/samples.json").then(function(data) {
-//     // console.log(data);
-
-//     var patient_name = data.names;
-//     // console.log(patient_name);
-//     var Samples = data.samples;
-//     // console.log(Samples);
-//     var demographics = data.metadata;
-//     //console.log(demographics);
-
-//     function updatePlotly () {
-//     // Use D3 to select the dropdown menu
-//       var dropdownMenu = d3.select("#selDataset");
-//   // Assign the value of the dropdown menu option to a variable
-//       var selected_name = dropdownMenu.node().value;
-
-//       // var CHART = d3.selectAll("#plot").node();
-
-
-
-
-
-  // });
