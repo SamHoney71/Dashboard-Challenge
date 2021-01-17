@@ -3,14 +3,14 @@
 // Need to create intitial with default plot
 function int() {
   d3.json("static/js/samples.json").then((data) => {
-    console.log(data);
+    // console.log(data);
 
     data.names.forEach(row => {
-      console.log(row);
-        d3.select("#selDataset")
-        .append("option")
-        .text(row)
-        .property("value");
+      //console.log(row);
+      d3.select("#selDataset")
+      .append("option")
+      .text(row)
+      .property("value");
     });
     displayPlot(data.names[0]);
     demographics(data.names[0]);
@@ -20,11 +20,12 @@ function int() {
 function demographics(id) {
   d3.json("static/js/samples.json").then((data) => {
     var metadata = data.metadata.filter(meta=>meta.id.toString() === id)[0];
-    console.log(metadata);
+    // console.log(metadata);
+    
     d3.select("#sample-metadata").html("");
     Object.entries(metadata).forEach((row)=>{
       d3.select("#sample-metadata")
-      .append('h6')
+      .append('p')
       .text(row[0]+ ' ' +":" + " " +row[1] + "\n");
     });
   });
@@ -42,16 +43,35 @@ function displayPlot(id) {
     // Get top 10 OTU ids and values
     top10otu_values = sample_id.sample_values.slice(0,10).reverse();
     top10otu_ids = sample_id.otu_ids.slice(0,10).reverse();
-    console.log(top10otu_ids + " " + top10otu_values);
+    // console.log(top10otu_ids);
+    // console.log(top10otu_values);
+
+    // convert OTU IDs to Strings for graphing
+    otu_ids_name = top10otu_ids.map(d=> "OTU " + d);
+    console.log(otu_ids_name)
+
+    //bar chart axis
+    xValue = otu_ids_name;
+    yValue = top10otu_values;
 
     var trace1 = {
-      x: top10otu_values,
-      y: top10otu_ids,
-      type:'bar',
-     orientation:'h'
+      x: yValue,
+      y: xValue,
+      type:"bar",
+      text: yValue.map(String),
+      textpostion: 'auto',
+      hoverinfo: 'none',
+      orientation: "h",
+      marker: {
+        color: 'blue',
+        line: {
+          color: 'black',
+          width: 1.5
+        }
+      },
     }
 
-    var data = trace1;
+    var data = [trace1];
 
     var layout = {
       title: "Top 10 OTU IDs for " + sample_id.id,
@@ -61,13 +81,35 @@ function displayPlot(id) {
       xaxis: {title: 'Top 10 Sample Values'},
     };
 
-    var config = {
-      scrollZoom : true,
-      displaylogo: false,
-      resposive: true,
-    };
+    // var config = {
+    //   scrollZoom : true,
+    //   displaylogo: false,
+    //   resposive: true,
+    // };
 
-  Plotly.newPlot("bar", data, layout, config);
+
+    var trace2 = {
+      x: top10otu_ids,
+      y: top10otu_values,
+      text: otu_ids_name,
+      mode: 'markers',
+      marker: {
+        size: top10otu_values,
+        color: top10otu_ids,
+      }    
+    }
+
+    var data1 = [trace2];
+
+    var layout1 = {
+      title: 'Bubble Chart for' +' ' + sample_id.id,
+      height:500,
+      xaxis:{title: 'Top 10 OTU IDs'},
+      yaxis: {title: 'Top 1- Sample Values'},
+    } 
+
+  Plotly.newPlot("bar", data, layout);
+  Plotly.newPlot("bubble", data1, layout1);
     
   });
 
