@@ -5,24 +5,24 @@ function int() {
   d3.json("static/js/samples.json").then((data) => {
     console.log(data);
 
-    data,names.forEach(row => {
+    data.names.forEach(row => {
       console.log(row);
         d3.select("#selDataset")
         .append("option")
         .text(row)
         .property("value");
     });
-    getPlotforRequestID(data.names[0]);
+    displayPlot(data.names[0]);
     demographics(data.names[0]);
   });
 };
 
 function demographics(id) {
   d3.json("static/js/samples.json").then((data) => {
-    var demographic = data.metadata.filter(meta=>meta.id.toString() === id)[0];
-    console.log(demographic);
+    var metadata = data.metadata.filter(meta=>meta.id.toString() === id)[0];
+    console.log(metadata);
     d3.select("#sample-metadata").html("");
-    Object.defineProperties(demographic).forEach((row)=>{
+    Object.defineProperties(metadata).forEach((row)=>{
       d3.select("#sample-metadata")
       .append('h6')
       .text(row[0]+ ' ' +":" + " " +row[1] + "\n");
@@ -47,8 +47,8 @@ function displayPlot(id) {
     var trace1 = {
       x: top10otu_values,
       y: top10otu_ids,
-      type:'bar'
-//      orientation:'h'
+      type:'bar',
+     orientation:'h'
     }
 
     var data = trace1;
@@ -61,15 +61,24 @@ function displayPlot(id) {
       xaxis: {title: 'Top 10 Sample Values'},
     };
 
-  Plotly.react("bar",data,layout,config);
+    var config = {
+      scrollZoom : true,
+      displaylogo: false,
+      resposive: true,
+    };
+
+  Plotly.newPlot("bar", data, layout, config);
     
   });
 
-  // function optionChanged(id) {
-  //   getPlotforRequestedID(id);
-  //   getMetaData(id);
-  // }
+  function optionChanged(id) {
+    displayPlot(id);
+    demographics(id);
+  }
 }
+
+int();
+
 
 
 
