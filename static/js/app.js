@@ -22,7 +22,7 @@ function demographics(id) {
     var metadata = data.metadata.filter(meta=>meta.id.toString() === id)[0];
     console.log(metadata);
     d3.select("#sample-metadata").html("");
-    Object.defineProperties(metadata).forEach((row)=>{
+    Object.entries(metadata).forEach((row)=>{
       d3.select("#sample-metadata")
       .append('h6')
       .text(row[0]+ ' ' +":" + " " +row[1] + "\n");
@@ -33,7 +33,7 @@ function demographics(id) {
 
 function displayPlot(id) {
   d3.json("static/js/samples.json").then((data) => {
-    var demographic = data.metadata.filter(meta=>meta.id.toString() === id)[0];
+    var metadata = data.metadata.filter(meta=>meta.id.toString() === id)[0];
     
     //filter samples by name id
     var sample_id = data.samples.filter(s => s.id.toString() === id)[0];
